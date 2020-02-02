@@ -17,9 +17,15 @@
   },
   "homepage": "https://github.com/andrewrmiller/db-client#readme",
   "dependencies": {
+    "debug": "^4.1.1",
+    "mysql": "^2.18.1",
     "ts-node": "^8.6.2",
     "tslint": "^6.0.0",
     "tslint-config-prettier": "^1.18.0",
     "typescript": "^3.7.5"
+  },
+  "devDependencies": {
+    "@types/debug": "^4.1.5",
+    "@types/mysql": "^2.15.8"
   }
 }
