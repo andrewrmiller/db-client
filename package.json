@@ -1,0 +1,25 @@
+{
+  "name": "@westlakelabs/db-client",
+  "version": "1.0.0",
+  "description": "Westlake Labs database client library.",
+  "main": "build/index.js",
+  "scripts": {
+    "build": "./node_modules/tslint/bin/tslint --project tsconfig.json && ./node_modules/typescript/bin/tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/andrewrmiller/db-client.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/andrewrmiller/db-client/issues"
+  },
+  "homepage": "https://github.com/andrewrmiller/db-client#readme",
+  "dependencies": {
+    "ts-node": "^8.6.2",
+    "tslint": "^6.0.0",
+    "tslint-config-prettier": "^1.18.0",
+    "typescript": "^3.7.5"
+  }
+}
