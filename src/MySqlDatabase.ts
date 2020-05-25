@@ -24,7 +24,7 @@ interface IDbResult {
 }
 
 /**
- * MySQL Reimas database interface.
+ * Class which exposes common database operations with promise-based results.
  */
 export class MySqlDatabase {
   private config: IDatabaseConfig;
@@ -51,7 +51,7 @@ export class MySqlDatabase {
       // to MySQL in UTC.  When we get them back from the database
       // we don't want any timezone translation to occur so we
       // configure the mysql client with timezone='Z'.
-      timezone: 'Z'
+      timezone: 'Z',
     });
 
     this.conn.connect();
@@ -62,6 +62,30 @@ export class MySqlDatabase {
    */
   public disconnect() {
     this.conn!.end();
+  }
+
+  /**
+   * Executes a database query and returns the results.
+   *
+   * @param query Database query to execute.
+   * @param parameters Parameter values used by the query.
+   */
+  protected query<TResult>(query: string, parameters: any[]) {
+    this.connect();
+
+    const p = new Promise<TResult>((resolve, reject) => {
+      this.conn!.query(query, parameters, (error, results, fields) => {
+        if (error) {
+          debug(`query: Failed to execute query: ${error.message}`);
+          reject(error);
+        } else {
+          resolve(results as TResult);
+        }
+      });
+    });
+
+    this.disconnect();
+    return p;
   }
 
   /**
@@ -240,26 +264,11 @@ export class MySqlDatabase {
     const placeholders = parameters.length
       ? '?' + ',?'.repeat(parameters.length - 1)
       : '';
-    return this.query(
+    return this.conn!.query(
       `call ${procName}(${placeholders})`,
       parameters,
       callback
     );
-  }
-
-  /**
-   * Executes a database query.
-   *
-   * @param options Query to execute.
-   * @param values Parameter values  to provide to the query.
-   * @param callback Function to call with results.
-   */
-  protected query(
-    options: string,
-    values: any,
-    callback?: queryCallback
-  ): Query {
-    return this.conn!.query(options, values, callback);
   }
 
   /**
@@ -276,7 +285,7 @@ export class MySqlDatabase {
     bitFields: string[]
   ) {
     const newObject = {
-      ...jsonObject
+      ...jsonObject,
     };
 
     for (const bitField of bitFields) {
