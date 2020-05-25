@@ -51,7 +51,7 @@ export class MySqlDatabase {
       // to MySQL in UTC.  When we get them back from the database
       // we don't want any timezone translation to occur so we
       // configure the mysql client with timezone='Z'.
-      timezone: 'Z',
+      timezone: 'Z'
     });
 
     this.conn.connect();
@@ -70,7 +70,7 @@ export class MySqlDatabase {
    * @param query Database query to execute.
    * @param parameters Parameter values used by the query.
    */
-  protected query<TResult>(query: string, parameters: any[]) {
+  protected query<TResult>(query: string, parameters?: any[]) {
     this.connect();
 
     const p = new Promise<TResult>((resolve, reject) => {
@@ -285,7 +285,7 @@ export class MySqlDatabase {
     bitFields: string[]
   ) {
     const newObject = {
-      ...jsonObject,
+      ...jsonObject
     };
 
     for (const bitField of bitFields) {
