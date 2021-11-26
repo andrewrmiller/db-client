@@ -5,6 +5,15 @@ import { DbError, DbErrorCode } from './DbError';
 
 const debug = createDebug('westlakelabs:database');
 
+// See: https://dev.mysql.com/doc/connector-j/5.1/en/connector-j-reference-error-sqlstates.html
+enum SqlStateValue {
+  NotFound = '02000',
+  AccessDenied = '28000',
+  DuplicateKey = '23000',
+  GeneralError = 'HY000',
+  UserDefiniedError = '45000'
+}
+
 // See: https://dev.mysql.com/doc/mysql-errors/8.0/en/server-error-reference.html
 enum MySqlErrNo {
   ER_SIGNAL_NOT_FOUND = 1643,
@@ -274,34 +283,40 @@ export class MySqlDatabase {
   }
 
   private createDbError(error: MysqlError) {
-    switch (error.errno) {
-      case MySqlErrNo.ER_SIGNAL_NOT_FOUND:
+    switch (error.sqlState) {
+      case SqlStateValue.NotFound:
         return new DbError(
           DbErrorCode.ItemNotFound,
           'Item not found',
           error.sqlMessage
         );
 
-      case MySqlErrNo.ER_ACCESS_DENIED_ERROR:
+      case SqlStateValue.AccessDenied:
         return new DbError(
           DbErrorCode.NotAuthorized,
           'Access denied.',
           error.sqlMessage
         );
 
-      case MySqlErrNo.ER_DUP_KEY:
+      case SqlStateValue.DuplicateKey:
         return new DbError(
           DbErrorCode.DuplicateItemExists,
           'Duplicate item exists.',
           error.sqlMessage
         );
 
-      case MySqlErrNo.ER_WRONG_VALUE:
-        return new DbError(
-          DbErrorCode.InvalidFieldValue,
-          'Invalid field value.',
-          error.sqlMessage
-        );
+      case SqlStateValue.UserDefiniedError:
+        for (const v of Object.values(DbError)) {
+          if (error.sqlMessage === v) {
+            return new DbError(
+              error.sqlMessage as DbErrorCode,
+              'A user defined error occurred.',
+              error.sqlMessage
+            );
+          }
+        }
+
+      // Fall through
 
       default:
         return new DbError(

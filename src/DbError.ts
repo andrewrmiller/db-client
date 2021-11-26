@@ -2,17 +2,16 @@
  * Codes returned from the database when errors occur.
  */
 export enum DbErrorCode {
-  NoError = 0,
-  ItemNotFound = 1,
-  DuplicateItemExists = 2,
-  QuotaExceeded = 3,
-  MaximumSizeExceeded = 4,
-  ItemTooLarge = 5,
-  ItemIsExpired = 6,
-  ItemAlreadyProcessed = 7,
-  InvalidFieldValue = 8,
-  NotAuthorized = 9,
-  UnexpectedError = 999
+  ItemNotFound = 'ITEM_NOT_FOUND',
+  DuplicateItemExists = 'DUPLICATE_ITEM_EXISTS',
+  QuotaExceeded = 'QUOTA_EXCEEDED',
+  MaximumSizeExceeded = 'MAXIMUM_SIZE_EXCEEDED',
+  ItemTooLarge = 'ITEM_TOO_LARGE',
+  ItemIsExpired = 'ITEM_IS_EXPIRED',
+  ItemAlreadyProcessed = 'ITEM_ALREADY_PROCESSED',
+  InvalidFieldValue = 'INVALID_FIELD_VALUE',
+  NotAuthorized = 'NOT_AUTHORIZED',
+  UnexpectedError = 'UNEXPECTED_ERROR'
 }
 
 /**
